@@ -67,3 +67,7 @@ campusfix-starter/
     ├── conftest.py      # pytest fixture（临时数据库）
     └── test_app.py      # 示例测试（含 1 个故意失败）
 ```
+
+## 小组 Sprint 1（第一阶段）计划
+
+- [ ] 完成 Issue #1 中的功能
