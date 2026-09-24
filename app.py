@@ -71,7 +71,7 @@ def create_ticket():
         description = request.form.get("description", "").strip()
         db = get_db()
         db.execute(
-            "INSERT INTO tickets (title, room, description) VALUES (?, ?, ?)",
+            "INSERT INTO tickets (title, description, room) VALUES (?, ?, ?)",
             (title, description, room),
         )
         db.commit()
