@@ -13,6 +13,7 @@ DATABASE = Path(os.environ.get("DATABASE_PATH", INSTANCE_DIR / "campusfix.db"))
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-secret")
+app.config["DATABASE"] = DATABASE
 
 # 基本日志配置：输出到 stdout，格式含时间与级别
 logging.basicConfig(
@@ -25,7 +26,7 @@ logger = logging.getLogger("campusfix")
 def get_db():
     """获取当前请求的数据库连接（Flask g 对象缓存）"""
     if "db" not in g:
-        g.db = sqlite3.connect(DATABASE)
+        g.db = sqlite3.connect(app.config["DATABASE"])
         g.db.row_factory = sqlite3.Row
     return g.db
 
@@ -63,12 +64,22 @@ def ticket_detail(ticket_id):
     return render_template("detail.html", ticket=ticket)
 
 
+def validate_ticket(title, room):
+    """标题最多允许20个字符，返回错误提示或 None。"""
+    if len(title) > 20:
+        return "标题不能超过20个字符"
+    return None
+
+
 @app.route("/tickets/new", methods=["GET", "POST"])
 def create_ticket():
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         room = request.form.get("room", "").strip()
         description = request.form.get("description", "").strip()
+        error = validate_ticket(title, room)
+        if error:
+            return error, 400
         db = get_db()
         db.execute(
             "INSERT INTO tickets (title, description, room) VALUES (?, ?, ?)",
