@@ -1,0 +1,20 @@
+# 独立的 GHCR 分发/回滚演示；不挂载原 systemd 部署的数据库。
+services:
+  web:
+    image: ghcr.io/carey0216/campusfix:${CAMPUSFIX_IMAGE_TAG:-v1}
+    ports:
+      - "127.0.0.1:${CAMPUSFIX_PORT:-15021}:5000"
+    environment:
+      DATABASE_PATH: /app/data/campusfix.db
+    volumes:
+      - ghcr-data:/app/data
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.5
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+volumes:
+  ghcr-data:
