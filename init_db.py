@@ -13,9 +13,10 @@ DEMO_TICKETS = [
 ]
 
 
-def main():
-    DATABASE.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DATABASE)
+def main(database=DATABASE):
+    database = Path(database)
+    database.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(database)
     with open(Path(__file__).parent / "schema.sql", encoding="utf-8") as f:
         conn.executescript(f.read())
     conn.executemany(
@@ -24,7 +25,7 @@ def main():
     )
     conn.commit()
     count = conn.execute("SELECT COUNT(*) FROM tickets").fetchone()[0]
-    print(f"数据库初始化完成: {DATABASE}")
+    print(f"数据库初始化完成: {database}")
     print(f"演示工单数量: {count}")
     conn.close()
 
