@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    image: campusfix:compose
+    ports:
+      - "127.0.0.1:${CAMPUSFIX_PORT:-5000}:5000"
+    environment:
+      DATABASE_PATH: /app/data/campusfix.db
+    volumes:
+      - campusfix-data:/app/data
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+volumes:
+  campusfix-data:
