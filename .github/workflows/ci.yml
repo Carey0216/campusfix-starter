@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: 安装依赖
+        run: python -m pip install -r requirements.txt
+      - name: 跑测试
+        run: python -m pytest
+      - name: 使用Secret
+        run: |
+          test -n "$TEST_TOKEN"
+          echo "token长度=${#TEST_TOKEN}"
+        env:
+          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
