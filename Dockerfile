@@ -6,7 +6,7 @@ WORKDIR /app
 COPY requirements-runtime.txt .
 RUN python -m pip install --no-cache-dir -r requirements-runtime.txt \
     && groupadd --gid 10001 campusfix \
-    && useradd --uid 10001 --gid campusfix --no-create-home campusfix \
+    && useradd --uid 10001 --gid campusfix --create-home campusfix \
     && mkdir -p /app/data \
     && chown campusfix:campusfix /app/data
 COPY --chown=campusfix:campusfix app.py init_db.py container_entrypoint.py schema.sql VERSION ./
