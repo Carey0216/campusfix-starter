@@ -83,8 +83,8 @@ def create_ticket():
             return error, 400
         db = get_db()
         db.execute(
-            "INSERT INTO tickets (title, description, room) VALUES (?, ?, ?)",
-            (title, description, room),
+            "INSERT INTO tickets (title, room, description) VALUES (?, ?, ?)",
+            (title, room, description),
         )
         db.commit()
         logger.info("created ticket: %s (%s)", title, room)
